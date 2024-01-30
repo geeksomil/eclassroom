@@ -1,0 +1,47 @@
+/*!**************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[12].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[12].oneOf[12].use[3]!./src/app/page.css ***!
+  \**************************************************************************************************************************************************************************************************************************************************************/
+#homepage{
+    display: flex;
+}
+#homepage #maindiv1{
+    width:50vw;
+    height:100vh;
+    background: url('/images/background.webp');
+}
+#homepage #maindiv2{
+    width:50vw;
+    height:100vh;
+    padding-left: 4rem;
+    padding-top: 3rem;
+    color: gray;
+    font-weight: bold;
+}
+#homepage main h1{
+    margin-bottom: 2.5rem;
+    color: black;
+}
+#homepage input[type="text"]{
+    border:none;
+    border-bottom: #035c32 2px solid;
+    height:1.5rem;
+    margin-bottom:1.5rem;
+    width: 80%;
+    
+}
+#homepage input[type="text"],#homepage label{
+    display: block;
+}
+#homepage button{
+width: 80%;
+height: 3rem;
+background: linear-gradient(to right,#035c32,green);
+color: white;
+border: none;
+margin-top: 2rem;
+}
+#homepage #passerror{
+    display: none;
+    color: red;
+    margin-left: 40%;
+}
