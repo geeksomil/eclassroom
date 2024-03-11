@@ -107,6 +107,7 @@ export default function f({ params }) {
             fontSize: "1rem",
             border: "none",
             backgroundColor: "white",
+            marginTop: "1rem",
           }}
           onClick={() => {
             if (on == "on") setOn("off");
@@ -295,7 +296,6 @@ export default function f({ params }) {
             <br></br>
           </div>
         </div>
-        <hr></hr>
       </header>
       <div id="info">
         <table bgcolor="#eaf1fb">
@@ -360,6 +360,7 @@ export default function f({ params }) {
             width: "100vw",
             background: 'url("/images/background.webp")',
             backgroundSize: "cover",
+            marginTop: "-1.5rem",
           }}
         >
           <div>

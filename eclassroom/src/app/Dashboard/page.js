@@ -197,7 +197,7 @@ export default function DashBoard() {
   return (
     <>
       <div id="dashboard">
-        <header>
+        <header style={{ height: "3rem" }}>
           <div id="hd1">
             <span>E</span> Classroom
           </div>
@@ -242,15 +242,18 @@ export default function DashBoard() {
             }
           })()}
           {(() => {
-            if (data)
+            if (data) {
+              let c = 0;
               return data.map((x) => (
                 <Classroom
                   group={[x.group]}
                   subject={x.subject}
                   educator={x.educator || username}
                   code={x.code}
+                  key={c++}
                 />
               ));
+            }
           })()}
         </main>
       </div>
