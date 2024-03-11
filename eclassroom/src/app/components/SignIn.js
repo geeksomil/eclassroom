@@ -1,5 +1,8 @@
 "use client";
 import localStorage from "react-secure-storage";
+import Cookies from "js-cookie";
+import { useContext } from "react";
+import studentContext from "../context/studentContext";
 export default function SignIn({
   email,
   password,
@@ -7,10 +10,12 @@ export default function SignIn({
   setPassword,
   router,
 }) {
+  const user = useContext(studentContext);
+  console.log(user);
   const addUser = async (e) => {
     e.preventDefault();
     const userData = { email, password };
-    console.log(userData);
+
     try {
       const res = await fetch("http://localhost:8000/checkuser", {
         method: "PUT",
@@ -19,17 +24,22 @@ export default function SignIn({
         },
         body: JSON.stringify(userData),
       });
-      let msg = await res.text();
-      msg = JSON.parse(msg);
+      let msg = await res.json();
+      console.log(msg);
 
       if (!res.ok) {
         // handle error
         console.log("error");
-        alert(msg[0]);
+        alert(msg.message[0]);
       } else {
         //success
-        localStorage.setItem("username", email);
-        localStorage.setItem("role", msg[1]);
+        user.setUsername(email);
+        user.setRole(msg.message[1]);
+        Cookies.set("token", msg.token, {
+          expires: 7,
+          secure: true,
+          sameSite: "strict",
+        });
         router.push("/Dashboard");
       }
     } catch (error) {

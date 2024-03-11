@@ -19,11 +19,12 @@ const addEducator = async ({ username, data }) => {
     })
       .save()
       .then((res) => {
-        console.log(res);
+        msg;
       })
       .catch((err) => {
         console.log(err);
       });
+    return 1;
   } else {
     await Educator.updateOne(
       { username },
@@ -35,6 +36,7 @@ const addEducator = async ({ username, data }) => {
       .catch((err) => {
         console.log(err);
       });
+    return tuple.classrooms.length;
   }
 };
 module.exports = addEducator;

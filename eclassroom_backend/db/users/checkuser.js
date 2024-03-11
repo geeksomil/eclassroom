@@ -7,6 +7,7 @@ dotenv.config();
 const url = process.env.url;
 async function checkUser(email, password) {
   const User = new mongoose.model("user", userSchema);
+  password = password.toString();
   let result = await User.findOne({ email });
   if (result == null) {
     return ["email not found", " "];

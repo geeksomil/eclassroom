@@ -1,13 +1,16 @@
 let mongoose = require("mongoose");
 let educatorSchema = require("./educatorschema.js");
 let studentschema = require("./studentsschema.js");
+let classroomSchema = require("../classrooms/schema.js");
 async function joinclassroom({ username, educator, code }) {
   const emodel = mongoose.model("educator", educatorSchema);
   const smodel = mongoose.model("student", studentschema);
+  const cmodel = mongoose.model("classroom", classroomSchema);
   let msg;
   let tuple = await emodel.findOne({ username: educator }).catch(() => {
     msg = "not able to connect to database";
   });
+  console.log(1);
   if (msg) return msg;
   if (tuple == null) {
     return "classroom does not exist";
@@ -28,6 +31,11 @@ async function joinclassroom({ username, educator, code }) {
       .catch((err) => {
         msg = "not able to connect to database";
       });
+    await cmodel
+      .updateOne({ educator, code }, { $push: { students: username } })
+      .catch((err) => {
+        console.log(err);
+      });
     return msg;
   } else {
     for (let i = 0; i < x.classrooms.length; i++) {
@@ -42,6 +50,12 @@ async function joinclassroom({ username, educator, code }) {
       { username },
       { $push: { classrooms: { ...tuple.classrooms[code - 1], educator } } }
     );
+    console.log("hi");
+    await cmodel
+      .updateOne({ educator, code }, { $push: { students: username } })
+      .catch((err) => {
+        console.log(err);
+      });
     return "classroom added succesfully";
   }
 }

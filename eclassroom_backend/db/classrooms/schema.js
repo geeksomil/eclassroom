@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
 const classroomSchema = new mongoose.Schema({
-  username: {
+  educator: {
     type: String,
-    unique: true,
     required: true,
   },
   code: String,

@@ -1,8 +1,11 @@
 "use client";
-import { Children, useEffect, useState } from "react";
+import { Children, useContext, useEffect, useState } from "react";
 import "./styles.css";
-import localStorage from "react-secure-storage";
 import Link from "next/link";
+import jwt from "jsonwebtoken";
+import studentContext from "../context/studentContext";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 const CustomLink = ({ children, href }) => {
   return (
     <Link href={href} passHref>
@@ -11,37 +14,32 @@ const CustomLink = ({ children, href }) => {
   );
 };
 
-function Classroom({ subject, group, educator, code }) {
-  return (
-    <>
-      <CustomLink href={"/Dashboard/" + subject}>
-        <div
-          className="classroom"
-          onClick={() => {
-            localStorage.setItem("desc", { subject, group, educator, code });
-          }}
-        >
-          <div className="header">
-            <h1>{subject}</h1>
-            {group}
-            <br></br>
-            {educator}
-          </div>
-          <div className="footer"></div>
-        </div>
-      </CustomLink>
-    </>
-  );
-}
-
 export default function DashBoard() {
   const [state, setState] = useState("off");
   const [data, setData] = useState([]);
   const [username, setUsername] = useState(" ");
   const [role, setRole] = useState(" ");
+  const [reload, setReload] = useState(0);
+  const router = useRouter();
+  const user = useContext(studentContext);
+  console.log(user);
   useEffect(() => {
-    let username = localStorage.getItem("username");
-    let role = localStorage.getItem("role");
+    let username = user.username;
+    let role = user.role;
+    let token = Cookies.get("token");
+    console.log(token);
+    if (token) {
+      let payload = jwt.decode(token);
+      username = payload.email;
+      role = payload.role;
+      user.setRole(role);
+      user.setUsername(username);
+      console.log(payload);
+      console.log(username);
+    } else {
+      router.push("/");
+      return;
+    }
     setUsername(username);
     setRole(role);
     (async () => {
@@ -54,7 +52,7 @@ export default function DashBoard() {
 
       setData((await res.json()).classrooms);
     })();
-  }, []);
+  }, [reload]);
   function NewClass(props) {
     async function createclassroom(e) {
       e.preventDefault();
@@ -76,8 +74,13 @@ export default function DashBoard() {
       })
         .then((data) => {
           message = data;
+          setState("off");
+          setReload(reload + 1);
         })
-        .catch((err) => (message = err));
+        .catch((err) => {
+          message = err;
+          alert("error");
+        });
       console.log(message);
     }
     async function joinclassroom(e) {
@@ -99,11 +102,13 @@ export default function DashBoard() {
         alert(res);
       } else {
         setState("off");
+        setReload(reload + 1);
       }
     }
+
     return (
       <>
-        <form id="classform" className="newclass">
+        <form id="classform" className="newclass" style={{ padding: "1rem" }}>
           <div
             style={{ float: "right" }}
             onClick={() => {
@@ -115,7 +120,6 @@ export default function DashBoard() {
           <br></br>
           <br></br>
           {(() => {
-            console.log("43");
             console.log(role);
             if (role == "teacher")
               return (
@@ -168,6 +172,28 @@ export default function DashBoard() {
       </>
     );
   }
+  function Classroom({ subject, group, educator, code }) {
+    return (
+      <>
+        <CustomLink href={"/Dashboard/" + subject}>
+          <div
+            className="classroom"
+            onClick={() => {
+              user.setDesc({ subject, group, educator, code });
+            }}
+          >
+            <div className="header">
+              <h1>{subject}</h1>
+              {group}
+              <br></br>
+              {educator}
+            </div>
+            <div className="footer"></div>
+          </div>
+        </CustomLink>
+      </>
+    );
+  }
   return (
     <>
       <div id="dashboard">
@@ -176,8 +202,35 @@ export default function DashBoard() {
             <span>E</span> Classroom
           </div>
           <div id="hd2">
-            <button onClick={() => setState("on")}>+</button>
-            <div>&nbsp;{username[0].toUpperCase()}</div>
+            <div style={{ display: "flex" }}>
+              <button onClick={() => setState("on")}>+</button>
+              <div id="profile" style={{ marginLeft: "1rem" }}>
+                &nbsp;{username[0].toUpperCase()}
+              </div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  width: "fit-content",
+                  marginLeft: "1rem",
+                }}
+              >
+                <img
+                  style={{
+                    height: "2rem",
+                    width: "2.5rem",
+                    display: "block",
+                    marginLeft: "-10%",
+                  }}
+                  src="/images/exit.png"
+                  onClick={() => {
+                    router.push("/");
+                  }}
+                ></img>
+
+                <div>Sign Out</div>
+                <br></br>
+              </div>
+            </div>
           </div>
         </header>
         <hr></hr>

@@ -1,37 +1,17 @@
 const mongoose = require("mongoose");
 const classroomSchema = require("./schema.js");
 
-async function addPost({
-  username,
-  code,
-  group,
-  subject,
-  post,
-  fileurl,
-  date,
-}) {
+async function addPost({ educator, code, post, fileurl, date }) {
+  console.log(educator, code, post, fileurl, date);
+  console.log(post);
   const Classroom = new mongoose.model("classroom", classroomSchema);
-  let tuple;
-  await Classroom.findOne({ username, code })
-    .then((res) => {
-      tuple = res;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  if (tuple == null) {
-    await new Classroom({
-      username,
-      code,
-      group,
-      subject,
-      posts: [],
-    }).save();
-  }
+  let tuple = await Classroom.findOne({ educator, code });
   await Classroom.updateOne(
-    { username, code },
-    { $push: { posts: [post, fileurl, date] } }
-  );
+    { educator, code },
+    { $push: { posts: [post, fileurl, date, []] } }
+  ).catch((err) => {
+    console.log("error");
+  });
   return "post added succesfully";
 }
 module.exports = addPost;

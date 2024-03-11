@@ -10,6 +10,7 @@ async function addUser(email, password, role) {
   console.log(role);
   let msg;
   let tuple = await User.findOne({ email });
+  password = toString(password);
   let encryptpass = await bcrypt.hash(password, 10);
   console.log(encryptpass);
   if (tuple != null) return "email already exist";
