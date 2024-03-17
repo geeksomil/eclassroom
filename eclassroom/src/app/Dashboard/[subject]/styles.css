@@ -106,16 +106,20 @@
     max-lines: 6;
 }
 #addpostbtn{
-    margin-left: 3rem;
     background-color: #028549;
     color: white;
     border:none;
     display: none;
+    height:"1.5rem";
 }
 #cancelbtn{
     background-color: red;
     color: white;
     border:none;
+    display: none;
+    height:"1.5rem";
+}
+#filelabel{
     display: none;
 }
 a{

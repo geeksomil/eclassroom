@@ -64,39 +64,17 @@ export default function f({ params }) {
         {(() => {
           if (isImage)
             return (
-              <a
-                href={
-                  "https://res.cloudinary.com/" +
-                  CLOUD_NAME +
-                  "/image/upload/" +
-                  filename
-                }
-                download={shortFilename}
-              >
+              <a href={"/uploads/" + filename} download={shortFilename}>
                 <img
                   alt={shortFilename}
-                  src={
-                    "https://res.cloudinary.com/" +
-                    CLOUD_NAME +
-                    "/image/upload/" +
-                    filename
-                  }
-                  width="500"
-                  height="500"
+                  src={"/uploads/" + filename}
+                  style={{ height: "20rem", width: "20rem" }}
                 ></img>
               </a>
             );
           else if (filename)
             return (
-              <a
-                href={
-                  "https://res.cloudinary.com/" +
-                  CLOUD_NAME +
-                  "/image/upload/" +
-                  filename
-                }
-                download={shortFilename}
-              >
+              <a href={"/uploads/" + filename} download={shortFilename}>
                 {shortFilename}
               </a>
             );
@@ -175,8 +153,10 @@ export default function f({ params }) {
       currentdate.getFullYear() +
       " " +
       currentdate.getHours() +
-      ":" +
-      currentdate.getMinutes();
+      ":";
+
+    if ((currentdate.getMinutes() + "").length == 1) datetime += "0";
+    datetime += currentdate.getMinutes();
     return (
       <>
         <div style={{ display: "flex" }}>
@@ -385,67 +365,106 @@ export default function f({ params }) {
                           "inline-block";
                         document.getElementById("cancelbtn").style.display =
                           "inline-block";
+                        document.getElementById("filelabel").style.display =
+                          "inline-block";
                       }}
                     ></textarea>
-                    <input type="file" id="file" name="file"></input>
                   </div>
-                  <button
-                    id="addpostbtn"
-                    onClick={async () => {
-                      var currentdate = new Date();
-                      var datetime =
-                        currentdate.getDate() +
-                        "/" +
-                        (currentdate.getMonth() + 1) +
-                        "/" +
-                        currentdate.getFullYear() +
-                        " " +
-                        currentdate.getHours() +
-                        ":" +
-                        currentdate.getMinutes();
-                      const formdata = new FormData();
-                      formdata.append("educator", desc.educator);
-                      formdata.append("code", desc.code);
-                      formdata.append("group", desc.group);
-                      formdata.append("subject", desc.subject);
-                      formdata.append(
-                        "post",
-                        document.getElementsByTagName("textarea")[0].value
-                      );
-                      formdata.append(
-                        "file",
-                        document.getElementById("file").files[0]
-                      );
-                      formdata.append("date", datetime);
-                      let msg = await fetch("http://localhost:8000/addpost", {
-                        method: "post",
-                        body: formdata,
-                      });
-                      msg = await msg.text();
-                      document.getElementsByTagName("textarea")[0].value = "";
-                      document.getElementsByTagName("textarea")[0].rows = 2;
-                      document.getElementById("addpostbtn").style.display =
-                        "none";
-                      document.getElementById("cancelbtn").style.display =
-                        "none";
-                      setRender(render + 1);
-                    }}
-                  >
-                    POST
-                  </button>
-                  <button
-                    id="cancelbtn"
-                    onClick={(e) => {
-                      document.getElementsByTagName("textarea")[0].value = "";
-                      document.getElementsByTagName("textarea")[0].rows = 2;
-                      document.getElementById("addpostbtn").style.display =
-                        "none";
-                      document.getElementById("cancelbtn").style.display =
-                        "none";
-                    }}
-                  >
-                    CANCEL
-                  </button>
+                  <div style={{ display: "flex" }}>
+                    <label
+                      for="file"
+                      style={{
+                        marginLeft: "3.5rem",
+                        marginRight: "0.5rem",
+                      }}
+                      id="filelabel"
+                    >
+                      <img
+                        src="/images/attachment.png"
+                        style={{
+                          height: "1rem",
+                          width: "1.5rem",
+                          margin: "auto",
+                        }}
+                      ></img>
+                    </label>
+                    <input
+                      type="file"
+                      id="file"
+                      name="file"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        document.getElementById("filename").innerText =
+                          e.target.files[0].name;
+                      }}
+                    ></input>
+                    <button
+                      id="addpostbtn"
+                      onClick={async () => {
+                        var currentdate = new Date();
+                        var datetime =
+                          currentdate.getDate() +
+                          "/" +
+                          (currentdate.getMonth() + 1) +
+                          "/" +
+                          currentdate.getFullYear() +
+                          " " +
+                          currentdate.getHours() +
+                          ":";
+                        if ((currentdate.getMinutes() + "").length == 1) {
+                          datetime += "0";
+                        }
+                        datetime += currentdate.getMinutes();
+                        const formdata = new FormData();
+                        formdata.append("educator", desc.educator);
+                        formdata.append("code", desc.code);
+                        formdata.append("group", desc.group);
+                        formdata.append("subject", desc.subject);
+                        formdata.append(
+                          "post",
+                          document.getElementsByTagName("textarea")[0].value
+                        );
+                        formdata.append(
+                          "file",
+                          document.getElementById("file").files[0]
+                        );
+                        formdata.append("date", datetime);
+                        let msg = await fetch("http://localhost:8000/addpost", {
+                          method: "post",
+                          body: formdata,
+                        });
+                        msg = await msg.text();
+                        document.getElementsByTagName("textarea")[0].value = "";
+                        document.getElementsByTagName("textarea")[0].rows = 2;
+                        document.getElementById("addpostbtn").style.display =
+                          "none";
+                        document.getElementById("cancelbtn").style.display =
+                          "none";
+                        document.getElementById("filelabel").style.display =
+                          "none";
+                        document.getElementById("filename").innerText = "";
+                        ("");
+                        setRender(render + 1);
+                      }}
+                    >
+                      POST
+                    </button>
+                    <button
+                      id="cancelbtn"
+                      onClick={(e) => {
+                        document.getElementsByTagName("textarea")[0].value = "";
+                        document.getElementsByTagName("textarea")[0].rows = 2;
+                        document.getElementById("addpostbtn").style.display =
+                          "none";
+                        document.getElementById("cancelbtn").style.display =
+                          "none";
+                        document.getElementById("filename").innerText = "";
+                      }}
+                    >
+                      CANCEL
+                    </button>
+                  </div>
+                  <div id="filename" style={{ marginLeft: "3rem" }}></div>
                 </div>
               </>
             );

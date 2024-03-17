@@ -1,6 +1,8 @@
 // Require the cloudinary library
 
 const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
+const zip = require("jszip");
 require("dotenv").config();
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

@@ -18,7 +18,7 @@ const App = express();
 let fileurl;
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    return cb(null, "./uploads");
+    return cb(null, "../eclassroom/public/uploads");
   },
   filename: function (req, file, cb) {
     fileurl = Date.now() + "-" + file.originalname;
@@ -114,7 +114,6 @@ App.get("/getposts", async (req, res) => {
     .catch((err) => res.status(404));
 });
 App.post("/addpost", upload.single("file"), async (req, res) => {
-  uploadImage(req.file.path);
   await addPost({ ...req.body, fileurl })
     .then((data) => {
       fileurl = null;

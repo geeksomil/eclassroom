@@ -1,4 +1,4 @@
-// File: C:\Users\HP\OneDrive\Desktop\e classroom\eclassroom\src\app\Dashboard\[subject]\page.js
+// File: C:\Users\HP\OneDrive\Desktop\e_classroom\eclassroom\src\app\Dashboard\[subject]\page.js
 import * as entry from '../../../../../src/app/Dashboard/[subject]/page.js'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
